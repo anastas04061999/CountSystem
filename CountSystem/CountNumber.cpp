@@ -87,31 +87,47 @@ int main()
 {
 	double a;
 	char s[80] = { 0 }; 
+	
 	int p;
 
 	cout << "Enter a number: ";
 	cin >> a;
+	bool h = true;
+	while (h == true) // цикл продолжается до тех пор, пока пользователь не введёт корректное значение
+	{
+		cout << "Enter the base of the number system: ";
+		cin >> p;
 
-	cout << "Enter the base of the number system: ";
-	cin >> p;
+		// Проверка на предыдущее извлечение
+		if (cin.fail()) // если предыдущее извлечение оказалось неудачным,
+		{
+			cin.clear(); // то возвращаем cin в 'обычный' режим работы
+			cin.ignore(32767, '\n'); // и удаляем значения предыдущего ввода из входного буфера
+			cout << "Oops, that input is invalid.  Please try again.\n";
+		}
+		else
+		{
+			cin.ignore(32767, '\n'); // удаляем лишние значения (например, ввели 4+5, программа возьмёт только 4)
+			h = false;
 
-	try {
-		int k = integerPart(a, p, s);
-		s[k++] = ',';
+			try {
+				int k = integerPart(a, p, s);
+				s[k++] = ',';
 
-		int intA;
-		intA = (int)a;
-		doublePart(a - intA, p, &s[k]);
+				int intA;
+				intA = (int)a;
+				doublePart(a - intA, p, &s[k]);
 
-		cout << s;
+				cout << s;
+			}
+			catch (NumberSystemBase* ex) {
+				cout << ex->getMessage() << " Code: " << ex->getCode();
+			}
+			catch (NumberSystemBase2* ex) {
+				cout << ex->getMessage() << " Code: " << ex->getCode();
+			}
+
+		}
 	}
-	catch (NumberSystemBase* ex) {
-		cout << ex->getMessage() << " Code: " << ex->getCode();
-	}
-	catch (NumberSystemBase2* ex) {
-		cout << ex->getMessage() << " Code: " << ex->getCode();
-	}
-
-	
 
 }
